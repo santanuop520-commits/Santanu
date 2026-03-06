@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BNF_XAU — Trading Mastery</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --black: #050a05;
+      --deep: #0a120a;
+      --green: #00ff41;
+      --green-mid: #00c832;
+      --green-dark: #006318;
+      --green-dim: #00ff4120;
+      --green-glow: #00ff4140;
+      --text: #c8ffd4;
+      --muted: #4a7a52;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: 'Rajdhani', sans-serif;
+      overflow-x: hidden;
+      cursor: crosshair;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--green-dim) 1px, transparent 1px),
+        linear-gradient(90deg, var(--green-dim) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.08) 2px,
+        rgba(0,0,0,0.08) 4px
+      );
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    section, nav, footer { position: relative; z-index: 2; }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 4rem;
+      border-bottom: 1px solid var(--green-dark);
+      background: rgba(5,10,5,0.9);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      color: var(--green);
+      letter-spacing: 4px;
+      text-shadow: 0 0 20px var(--green);
+    }
+
+    .logo span { color: white; }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--green); text-shadow: 0 0 10px var(--green); }
+
+    .nav-cta {
+      background: transparent;
+      border: 1px solid var(--green);
+      color: var(--green);
+      padding: 0.5rem 1.5rem;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .nav-cta:hover {
+      background: var(--green);
+      color: var(--black);
+      box-shadow: 0 0 20px var(--green);
+    }
+
+    .hero {
+      min-height: 92vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 6rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-ticker {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--green);
+      letter-spacing: 2px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      animation: fadeDown 0.8s ease both;
+    }
+
+    .ticker-dot {
+      width: 8px; height: 8px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.7); }
+    }
+
+    .hero h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(4rem, 10vw, 9rem);
+      line-height: 0.9;
+      letter-spacing: 2px;
+      color: white;
+      animation: fadeUp 0.9s 0.1s ease both;
+    }
+
+    .hero h1 .green-word {
+      color: var(--green);
+      text-shadow: 0 0 40px var(--green), 0 0 80px var(--green-glow);
+    }
+
+    .hero-sub {
+      font-size: 1.25rem;
+      color: var(--muted);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-top: 1.5rem;
+      max-width: 600px;
+      font-weight: 600;
+      animation: fadeUp 0.9s 0.25s ease both;
+    }
+
+    .hero-cta-group {
+      display: flex;
+      gap: 1.2rem;
+      margin-top: 3rem;
+      animation: fadeUp 0.9s 0.4s ease both;
+    }
+
+    .btn-primary {
+      background: var(--green);
+      color: var(--black);
+      border: none;
+      padding: 1rem 2.5rem;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 0 30px var(--green), 0 0 60px var(--green-glow);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--green-dark);
+      padding: 1rem 2.5rem;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+      clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid var(--green-dark);
+      border-bottom: 1px solid var(--green-dark);
+      background: rgba(0,255,65,0.03);
+    }
+
+    .stat-item {
+      padding: 2rem;
+      text-align: center;
+      border-right: 1px solid var(--green-dark);
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .stat-item:last-child { border-right: none; }
+
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3rem;
+      color: var(--green);
+      text-shadow: 0 0 20px var(--green-glow);
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .section-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--green);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .section-label::before {
+      content: '//';
+      opacity: 0.5;
+    }
+
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      color: white;
+      letter-spacing: 2px;
+      line-height: 1;
+    }
+
+    .section-title .accent { color: var(--green); }
+
+    .pricing-section {
+      padding: 6rem 4rem;
+    }
+
+    .pricing-header {
+      margin-bottom: 4rem;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      max-width: 1000px;
+    }
+
+    .pricing-card {
+      border: 1px solid var(--green-dark);
+      background: linear-gradient(135deg, rgba(0,255,65,0.04), rgba(0,0,0,0));
+      padding: 3rem;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+    }
+
+    .pricing-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--green), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .pricing-card:hover {
+      border-color: var(--green);
+      background: linear-gradient(135deg, rgba(0,255,65,0.08), rgba(0,0,0,0));
+      box-shadow: 0 0 40px var(--green-glow), inset 0 0 40px rgba(0,255,65,0.03);
+      transform: translateY(-4px);
+    }
+
+    .pricing-card:hover::before { opacity: 1; }
+
+    .pricing-card.featured {
+      border-color: var(--green);
+      background: linear-gradient(135deg, rgba(0,255,65,0.1), rgba(0,0,0,0));
+    }
+
+    .featured-badge {
+      position: absolute;
+      top: 1.2rem; right: 1.2rem;
+      background: var(--green);
+      color: var(--black);
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      padding: 0.3rem 0.8rem;
+      text-transform: uppercase;
+      font-family: 'Space Mono', monospace;
+    }
+
+    .card-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1.2rem;
+      display: block;
+    }
+
+    .card-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      letter-spacing: 3px;
+      color: white;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-desc {
+      font-size: 0.9rem;
+      color: var(--muted);
+      letter-spacing: 1px;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+
+    .price-block {
+      display: flex;
+      align-items: baseline;
+      gap: 0.4rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .currency {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--green);
+    }
+
+    .amount {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 5rem;
+      color: var(--green);
+      text-shadow: 0 0 30px var(--green-glow);
+      line-height: 1;
+    }
+
+    .period {
+      font-size: 0.85rem;
+      color: var(--muted);
+      letter-spacing: 2px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .features-list {
+      list-style: none;
+      margin-bottom: 2.5rem;
+    }
+
+    .features-list li {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 0.6rem 0;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      border-bottom: 1px solid rgba(0,255,65,0.06);
+      letter-spacing: 0.5px;
+    }
+
+    .features-list li:last-child { border-bottom: none; }
+
+    .check {
+      color: var(--green);
+      font-size: 1rem;
+      flex-shrink: 0;
+      text-shadow: 0 0 8px var(--green);
+    }
+
+    .card-btn {
+      width: 100%;
+      padding: 1rem;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.25s;
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    }
+
+    .card-btn-outline {
+      background: transparent;
+      border: 1px solid var(--green);
+      color: var(--green);
+    }
+
+    .card-btn-outline:hover {
+      background: var(--green);
+      color: var(--black);
+      box-shadow: 0 0 20px var(--green-glow);
+    }
+
+    .card-btn-filled {
+      background: var(--green);
+      border: none;
+      color: var(--black);
+    }
+
+    .card-btn-filled:hover {
+      box-shadow: 0 0 30px var(--green), 0 0 60px var(--green-glow);
+      transform: translateY(-2px);
+    }
+
+    .features-section {
+      padding: 6rem 4rem;
+      background: rgba(0,255,65,0.02);
+      border-top: 1px solid var(--green-dark);
+      border-bottom: 1px solid var(--green-dark);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .feature-card {
+      padding: 2rem;
+      border: 1px solid var(--green-dark);
+      background: rgba(0,0,0,0.4);
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 2px;
+      background: var(--green);
+      transition: width 0.3s;
+    }
+
+    .feature-card:hover {
+      border-color: var(--green-dark);
+      background: rgba(0,255,65,0.05);
+      transform: translateY(-3px);
+    }
+
+    .feature-card:hover::after { width: 100%; }
+
+    .feature-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .feature-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: 2px;
+      color: white;
+      margin-bottom: 0.5rem;
+    }
+
+    .feature-text {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .testimonials-section {
+      padding: 6rem 4rem;
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .testimonial-card {
+      padding: 2rem;
+      border: 1px solid var(--green-dark);
+      background: rgba(0,255,65,0.03);
+      position: relative;
+    }
+
+    .quote-mark {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 5rem;
+      color: var(--green);
+      opacity: 0.15;
+      line-height: 0.8;
+      margin-bottom: 0.5rem;
+    }
+
+    .testimonial-text {
+      font-size: 0.95rem;
+      line-height: 1.8;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .author-avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: var(--green-dark);
+      border: 2px solid var(--green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--green);
+    }
+
+    .author-name {
+      font-weight: 700;
+      font-size: 1rem;
+      color: white;
+      letter-spacing: 1px;
+    }
+
+    .author-role {
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 1px;
+    }
+
+    .stars { color: var(--green); font-size: 0.85rem; margin-bottom: 0.8rem; letter-spacing: 2px; }
+
+    .cta-section {
+      padding: 8rem 4rem;
+      text-align: center;
+      background: radial-gradient(ellipse at center, rgba(0,255,65,0.08) 0%, transparent 70%);
+      border-top: 1px solid var(--green-dark);
+    }
+
+    .cta-section .section-label { justify-content: center; }
+
+    .cta-section .section-title {
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      margin-bottom: 1.5rem;
+    }
+
+    .cta-section p {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 500px;
+      margin: 0 auto 3rem;
+      letter-spacing: 1px;
+      line-height: 1.7;
+    }
+
+    footer {
+      padding: 2rem 4rem;
+      border-top: 1px solid var(--green-dark);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(5,10,5,0.9);
+    }
+
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      color: var(--green);
+      letter-spacing: 3px;
+    }
+
+    .footer-copy {
+      font-size: 0.8rem;
+      color: var(--muted);
+      letter-spacing: 2px;
+      font-family: 'Space Mono', monospace;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .marquee-wrapper {
+      overflow: hidden;
+      background: var(--green);
+      padding: 0.6rem 0;
+      display: flex;
+    }
+
+    .marquee-track {
+      display: flex;
+      animation: marquee 18s linear infinite;
+      white-space: nowrap;
+    }
+
+    .marquee-item {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--black);
+      font-weight: 700;
+      letter-spacing: 2px;
+      padding: 0 2.5rem;
+    }
+
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    .tg-float {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #229ED9;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 0.9rem 1.6rem;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      cursor: pointer;
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      box-shadow: 0 4px 30px rgba(34,158,217,0.5);
+      text-decoration: none;
+      animation: floatPulse 2.5s infinite;
+      transition: transform 0.2s;
+    }
+    .tg-float:hover { transform: scale(1.05); }
+    @keyframes floatPulse {
+      0%, 100% { box-shadow: 0 4px 30px rgba(34,158,217,0.5); }
+      50% { box-shadow: 0 4px 50px rgba(34,158,217,0.9); }
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(6px);
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+      background: var(--deep);
+      border: 1px solid var(--green);
+      padding: 3rem;
+      max-width: 420px;
+      width: 90%;
+      text-align: center;
+      position: relative;
+      clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+      box-shadow: 0 0 60px var(--green-glow);
+    }
+    .modal-close {
+      position: absolute;
+      top: 1rem; right: 1.2rem;
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    .modal-close:hover { color: var(--green); }
+    .modal-plan {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--green);
+      letter-spacing: 3px;
+      margin-bottom: 0.5rem;
+    }
+    .modal-price {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 4rem;
+      color: var(--green);
+      text-shadow: 0 0 20px var(--green-glow);
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+    .modal-desc {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 2rem;
+      letter-spacing: 1px;
+    }
+    .upi-box {
+      background: rgba(0,255,65,0.06);
+      border: 1px solid var(--green-dark);
+      padding: 1.2rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .upi-id {
+      font-family: 'Space Mono', monospace;
+      font-size: 1rem;
+      color: var(--green);
+      letter-spacing: 1px;
+    }
+    .copy-btn {
+      background: var(--green);
+      color: var(--black);
+      border: none;
+      padding: 0.4rem 1rem;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover { opacity: 0.8; }
+    .modal-steps {
+      text-align: left;
+      margin: 1.5rem 0;
+      list-style: none;
+    }
+    .modal-steps li {
+      font-size: 0.9rem;
+      color: var(--text);
+      padding: 0.4rem 0;
+      display: flex;
+      gap: 0.6rem;
+      align-items: flex-start;
+      border-bottom: 1px solid rgba(0,255,65,0.06);
+    }
+    .step-num {
+      color: var(--green);
+      font-weight: 700;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .modal-tg-btn {
+      display: block;
+      width: 100%;
+      padding: 0.9rem;
+      background: #229ED9;
+      color: white;
+      border: none;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      cursor: pointer;
+      text-decoration: none;
+      margin-top: 1rem;
+      transition: opacity 0.2s;
+    }
+    .modal-tg-btn:hover { opacity: 0.85; }
+
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .hero { padding: 4rem 1.5rem; }
+      .stats-bar { grid-template-columns: repeat(2, 1fr); }
+      .pricing-section, .features-section, .testimonials-section, .cta-section { padding: 4rem 1.5rem; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .features-grid, .testimonials-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 1rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo">BNF_<span>XAU</span></div>
+    <ul class="nav-links">
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#features">What You Get</a></li>
+      <li><a href="#testimonials">Results</a></li>
+    </ul>
+    <button class="nav-cta">Enroll Now</button>
+  </nav>
+
+  <div class="marquee-wrapper">
+    <div class="marquee-track">
+      <span class="marquee-item">NIFTY 50</span>
+      <span class="marquee-item">BANKNIFTY ▲ 2.3%</span>
+      <span class="marquee-item">CRUDE OIL ▼ 0.8%</span>
+      <span class="marquee-item">SENSEX ▲ 1.1%</span>
+      <span class="marquee-item">GOLD ▲ 0.4%</span>
+      <span class="marquee-item">FUNDED TRADERS LIVE</span>
+      <span class="marquee-item">MIDCAP 150 ▲ 1.7%</span>
+      <span class="marquee-item">OPTIONS FLOW ACTIVE</span>
+      <span class="marquee-item">NIFTY 50</span>
+      <span class="marquee-item">BANKNIFTY ▲ 2.3%</span>
+      <span class="marquee-item">CRUDE OIL ▼ 0.8%</span>
+      <span class="marquee-item">SENSEX ▲ 1.1%</span>
+      <span class="marquee-item">GOLD ▲ 0.4%</span>
+      <span class="marquee-item">FUNDED TRADERS LIVE</span>
+      <span class="marquee-item">MIDCAP 150 ▲ 1.7%</span>
+      <span class="marquee-item">OPTIONS FLOW ACTIVE</span>
+    </div>
+  </div>
+
+  <section class="hero">
+    <div class="hero-ticker">
+      <div class="ticker-dot"></div>
+      LIVE ENROLLMENT OPEN — LIMITED SEATS
+    </div>
+    <h1>
+      TRADE LIKE<br/>
+      THE <span class="green-word">FUNDED</span><br/>
+      ELITE
+    </h1>
+    <p class="hero-sub">Institutional strategies. Real capital. Proven results. Built for the Indian market.</p>
+    <div class="hero-cta-group">
+      <button class="btn-primary" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">View Plans</button>
+      <button class="btn-secondary">Watch Free Demo</button>
+    </div>
+  </section>
+
+  <div class="stats-bar">
+    <div class="stat-item">
+      <span class="stat-num">2400+</span>
+      <span class="stat-label">Active Traders</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">₹4.2Cr</span>
+      <span class="stat-label">Profits Generated</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">87%</span>
+      <span class="stat-label">Success Rate</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">3 Yrs</span>
+      <span class="stat-label">Market Experience</span>
+    </div>
+  </div>
+
+  <section class="pricing-section" id="pricing">
+    <div class="pricing-header">
+      <div class="section-label">Investment Plans</div>
+      <h2 class="section-title">CHOOSE YOUR <span class="accent">EDGE</span></h2>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <span class="card-icon">📈</span>
+        <div class="card-name">Funded Trading Course</div>
+        <div class="card-desc">Complete roadmap to becoming a funded trader. From basics to advanced strategies used by prop firms.</div>
+        <div class="price-block">
+          <span class="currency">₹</span>
+          <span class="amount">999</span>
+          <span class="period">/ month</span>
+        </div>
+        <ul class="features-list">
+          <li><span class="check">▸</span> Full Funded Trader Roadmap</li>
+          <li><span class="check">▸</span> Options & Futures Strategies</li>
+          <li><span class="check">▸</span> Risk Management Framework</li>
+          <li><span class="check">▸</span> Weekly Live Webinars</li>
+          <li><span class="check">▸</span> Trade Setups & Watchlists</li>
+          <li><span class="check">▸</span> Private Discord Access</li>
+          <li><span class="check">▸</span> Recorded Sessions Library</li>
+        </ul>
+        <button class="card-btn card-btn-outline" onclick="openModal('course')">Enroll for ₹999/mo</button>
+      </div>
+
+      <div class="pricing-card featured">
+        <div class="featured-badge">⚡ Best Value</div>
+        <span class="card-icon">🎯</span>
+        <div class="card-name">Personal Mentorship</div>
+        <div class="card-desc">1-on-1 mentorship with your personal trading coach. Accelerate your journey
